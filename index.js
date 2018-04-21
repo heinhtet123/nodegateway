@@ -16,7 +16,7 @@ app.get('/',(req,res)=>{
 });
 
 app.get('/api/courses',(req,res)=>{
-    res.send([1,2,3]);
+    res.send(courses);
 });
 
 app.get('/api/courses/:id',(req,res)=>{
@@ -27,21 +27,12 @@ app.get('/api/courses/:id',(req,res)=>{
 });
 
 app.post('/api/courses',(req,res)=>{
-    const schema = {
-        name:Joi.string().min(3).required() 
-    };
 
-    const result=Joi.validate(req.body,schema);
-    
+    const {error} = validateCourse(req.body);
    
-
-
-
-    if(result.error)
-    {
-        res.status(400).send(result.error.details[0].message);
-        return;
-    }
+    if(error) return  res.status(400).send(error.details[0].message);
+        
+    
 
    const course={
        id:courses.length+1,
@@ -54,16 +45,48 @@ app.post('/api/courses',(req,res)=>{
 
 
 app.put('/api/courses/:id',(req,res)=>{
-    const course=courses.find(c => c.id === parseInt(req.params.id));
 
-    
+    const course=courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send('The course id was not matched');
+
+    const {error} = validateCourse(req.body);
+   
+    if(error)
+    {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    course.name=req.body.name;
+    res.send(course);
+
+
+});
+
+function validateCourse(course)
+{
+    console.log(course);
     const schema = {
         name:Joi.string().min(3).required() 
     };
     
-    const result=Joi.validate(req.body,schema);
+    return Joi.validate(course,schema);
+}
+
+
+app.delete('/api/courses/:id',(req,res)=>{
+    const course=courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send('The course id was not matched');
+    
+    const index=courses.indexOf(course);
+    courses.splice(index,1);
+    res.send(course);
 
 });
+
+
+
+
 //port
 const port=process.env.PORT || 3000;
 
