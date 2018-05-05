@@ -108,6 +108,12 @@ app.delete('/api/courses/:id',(req,res)=>{
 
 
 //port
-const port=process.env.PORT || 3000;
+const PORT = 3000;
+const HOST = '0.0.0.0';
 
-app.listen(port,()=>console.log(`listening on port ${port}`));
+// const port=process.env.PORT || 80;
+
+app.listen(PORT);
+// app.listen(PORT,HOST);
+
+console.log(`Running on http://${HOST}:${PORT}`);
