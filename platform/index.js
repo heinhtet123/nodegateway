@@ -5,7 +5,22 @@ const morgan= require('morgan');
 const Joi=require('joi');
 const logger=require('./logger');
 const express = require('express');
+const http = require('http')
 const app=express();
+const server=http.createServer(app);
+const mongoose=require('mongoose');
+
+
+
+
+// console.log(mongoose);
+mongoose.connect('mongodb://mongo:27017/gateway')
+.then(()=>{
+    console.log("Connected to Mongodb");
+
+}).catch(err=>console.error('Could not connect to Mongodb',err));
+
+
 
 
 app.use(express.json());
@@ -14,11 +29,14 @@ app.use(express.static('public'));
 app.use(helmet());
 
 
+
 console.log("application name : "+ config.get('name'));
 if(app.get('env')=== 'development'){
     app.use(morgan('tiny'));
     console.log('morgan enable');
 }
+
+
 
 
 app.use(logger);
@@ -32,7 +50,8 @@ const courses=[
 ];
 
 app.get('/',(req,res)=>{
-    res.send('Hello World ? my world.org');
+    res.send('Hello  ? my world');
+    
 });
 
 app.get('/api/courses',(req,res)=>{
@@ -109,11 +128,25 @@ app.delete('/api/courses/:id',(req,res)=>{
 
 //port
 const PORT = 8080;
-const HOST = '0.0.0.0';
+// const HOST = '0.0.0.0';
+const HOST = 'localhost';
+// const HOST = 'test.com';
 
 // const port=process.env.PORT || 80;
+// app.listen(PORT); 
 
-app.listen(PORT);
+
+app.listen(PORT,HOST);
+// server.listen(PORT);
+
+// app.listen(PORT,HOST,function(){
+//     app.close(function(){
+//       app.listen(PORT,'127.0.0.0')
+//     })
+//    })
+
+
+
 // app.listen(PORT,HOST);
 
 console.log(`Running on http://${HOST}:${PORT}`);
