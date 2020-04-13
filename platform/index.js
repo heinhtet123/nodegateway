@@ -5,10 +5,15 @@ const morgan= require('morgan');
 const Joi=require('joi');
 const logger=require('./logger');
 const express = require('express');
-const http = require('http')
+const http = require('http');
 const app=express();
 const server=http.createServer(app);
 const mongoose=require('mongoose');
+var path = require('path');
+
+
+
+
 
 
 
@@ -50,7 +55,12 @@ const courses=[
 ];
 
 app.get('/',(req,res)=>{
-    res.send('Hello  ? my world');
+
+
+    res.sendFile(path.join(__dirname + '/index.html'));
+
+
+    // res.send('Hello  ? my world');
     
 });
 
