@@ -137,7 +137,7 @@ app.delete('/api/courses/:id',(req,res)=>{
 
 
 //port
-const PORT = 8080;
+const PORT = 80;
 const HOST = '0.0.0.0';
 // const HOST = 'localhost';
 // const HOST = 'test.com';
