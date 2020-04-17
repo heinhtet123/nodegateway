@@ -6,24 +6,24 @@ const Joi=require('joi');
 const logger=require('./logger');
 const express = require('express');
 const http = require('http');
+let fetch = require('node-fetch');
 const app=express();
 const server=http.createServer(app);
 const mongoose=require('mongoose');
 var path = require('path');
 
+require('dotenv').config();
+
+const process = require('process');
+const OWM_API_KEY=process.env.OWM_API_KEY || 'invalid_key';
+const UNITS = process.env.UNITS;
 
 
+// mongoose.connect('mongodb://mongo:27017/gateway')
+// .then(()=>{
+//     console.log("Connected to Mongodb");
 
-
-
-
-
-// console.log(mongoose);
-mongoose.connect('mongodb://mongo:27017/gateway')
-.then(()=>{
-    console.log("Connected to Mongodb");
-
-}).catch(err=>console.error('Could not connect to Mongodb',err));
+// }).catch(err=>console.error('Could not connect to Mongodb',err));
 
 
 
@@ -35,11 +35,11 @@ app.use(helmet());
 
 
 
-console.log("application name : "+ config.get('name'));
-if(app.get('env')=== 'development'){
-    app.use(morgan('tiny'));
-    console.log('morgan enable');
-}
+// console.log("application name : "+ config.get('name'));
+// if(app.get('env')=== 'development'){
+//     app.use(morgan('tiny'));
+//     console.log('morgan enable');
+// }
 
 
 
@@ -73,6 +73,35 @@ app.get('/api/courses/:id',(req,res)=>{
     if(!course) res.status(404).send('The course id was not matched');
 
     res.send(course);
+});
+
+
+
+  
+
+
+app.get('/api/weather',async (req,res)=>{
+
+
+// c4d678135c820cad6c19d6c2c1924a85
+    let url = `http://api.openweathermap.org/data/2.5/weather?q=yangon&units=${UNITS}&appid=${OWM_API_KEY}`;
+
+
+
+    const response = await fetch(url);
+    const json = await response.json();
+
+    res.send(json);
+
+    // let weather =  data.json();
+    // console.log(weather);
+
+    // http.request(options,);
+    // let data = fetch(url);
+    // let weather =  data.json();
+
+
+
 });
 
 app.post('/api/courses',(req,res)=>{
